@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # o "pip", "maven", "docker", ecc.
+    directory: "/" # percorso della cartella con il file di lock
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "fix"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    pull-request-branch-name:
+      separator: "-"
+    rebase-strategy: "auto"
