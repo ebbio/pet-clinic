@@ -1,0 +1,97 @@
+name: Dependabot PR Kubernetes Test
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - main
+
+jobs:
+  test-dependabot-on-k8s:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: spring-petclinic
+      IMAGE_TAG: pr-${{ github.event.pull_request.number }}
+      NAMESPACE: dependabot-${{ github.event.pull_request.number }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      run: |
+        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.27.0'
+
+    - name: Configure kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
+
+    - name: Create ephemeral namespace
+      run: |
+        kubectl create namespace $NAMESPACE
+
+    - name: Deploy image to namespace
+      run: |
+        cat <<EOF | kubectl apply -n $NAMESPACE -f -
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: spring-petclinic
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: spring-petclinic
+          template:
+            metadata:
+              labels:
+                app: spring-petclinic
+            spec:
+              containers:
+              - name: spring-petclinic
+                image: $IMAGE_NAME:$IMAGE_TAG
+                imagePullPolicy: IfNotPresent
+                ports:
+                - containerPort: 8080
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: spring-petclinic
+        spec:
+          selector:
+            app: spring-petclinic
+          ports:
+            - port: 8080
+              targetPort: 8080
+        EOF
+
+    - name: Wait for pod to be ready
+      run: |
+        kubectl wait --namespace $NAMESPACE \
+          --for=condition=ready pod \
+          --selector=app=spring-petclinic \
+          --timeout=120s
+
+    - name: Test: health check
+      run: |
+        POD=$(kubectl get pod -n $NAMESPACE -l app=spring-petclinic -o jsonpath="{.items[0].metadata.name}")
+        kubectl port-forward -n $NAMESPACE $POD 8080:8080 &
+        sleep 5
+        curl -f http://localhost:8080 || (echo "Health check failed" && exit 1)
+
+    - name: Cleanup ephemeral namespace
+      if: always()
+      run: |
+        kubectl delete namespace $NAMESPACE
