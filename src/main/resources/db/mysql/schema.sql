@@ -53,3 +53,24 @@ CREATE TABLE IF NOT EXISTS visits (
   description VARCHAR(255),
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS featured_dogs (
+  id             INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name           VARCHAR(50),
+  breed          VARCHAR(80),
+  age            INT(4),
+  description    VARCHAR(200),
+  rotation_index INT(4),
+  INDEX(rotation_index)
+) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS dog_photos (
+  id            INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  dog_id        INT(4) UNSIGNED NOT NULL,
+  photo_url     VARCHAR(500),
+  caption       VARCHAR(200),
+  display_order INT(4),
+  file_size     BIGINT,
+  file_type     VARCHAR(10),
+  FOREIGN KEY (dog_id) REFERENCES featured_dogs(id)
+) engine=InnoDB;
