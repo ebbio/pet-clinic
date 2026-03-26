@@ -58,6 +58,11 @@
             <span th:text="#{dogOfMonth}">Dog of the Month</span>
           </li>
 
+          <li th:replace="~{::menuItem ('/store/dog-food','store','dog food store','shopping-cart',#{dogFoodStore})}">
+            <span class="fa fa-shopping-cart" aria-hidden="true"></span>
+            <span th:text="#{dogFoodStore}">Dog Food Store</span>
+          </li>
+
           <li
             th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle',#{error})}">
             <span class="fa exclamation-triangle" aria-hidden="true"></span>
