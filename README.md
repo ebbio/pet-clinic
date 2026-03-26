@@ -1,35 +1,105 @@
-# Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
+# PetClinic Platform
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
+[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)
+[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
 
-## Understanding the Spring Petclinic application with a few diagrams
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
 
-[See the presentation here](https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application)
+## Purpose
+
+A Spring Boot platform for managing veterinary clinic operations: pet owners, pets, veterinarians, and visit records.
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Language | Java 17 |
+| Framework | Spring Boot 3.5.x |
+| Database | PostgreSQL (production), H2 (development) |
+| Auth | JWT-based stateless authentication _(planned — [TO BE CONFIRMED: not yet implemented])_ |
+| Build | Maven / Gradle |
+| Deploy | Docker Compose (local), Kubernetes (`k8s/`) |
+
+## Architecture Constraints
+
+- **Stateless**: No server-side session. Auth context carried in JWT bearer tokens only.
+- **PostgreSQL**: Use `spring.profiles.active=postgres` in all non-local environments.
+- **H2**: For local development only (default profile).
+
+## AI Governance
+
+This repository is AI-ready. See:
+- `.github/copilot-instructions.md` — coding standards, architecture constraints, security rules
+- `.github/general.instructions.md` — domain model and API design rules
+- `.github/agents/` — implementation and test agents
+- `ARCHITECTURE.md` — architecture overview
+- `BUSINESS_RULES.md` — domain business rules
+- `QUALITY.md` — non-functional requirements
+- `ADR_TEMPLATE.md` — architectural decision record template
+
+> **Intended structure**: Once `docs/` and `skills/` directories are created, reorganize:
+> - `ARCHITECTURE.md` → `docs/architecture/overview.md`
+> - `BUSINESS_RULES.md` → `docs/business/business-rules.md`
+> - `QUALITY.md` → `docs/nfr/quality.md`
+> - `ADR_TEMPLATE.md` → `docs/adr/ADR-001-template.md`
+> - `SKILL_*.md` → `skills/*.md`
+> - `.github/general.instructions.md` → `.github/instructions/general.instructions.md`
 
 ## Run Petclinic locally
 
-Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/). You can build a jar file and run it from the command line (it should work just as well with Java 17 or newer):
-
-```bash
-git clone https://github.com/spring-projects/spring-petclinic.git
-cd spring-petclinic
-./mvnw package
-java -jar target/*.jar
-```
-
-(On Windows, or if your shell doesn't expand the glob, you might need to specify the JAR file name explicitly on the command line at the end there.)
-
-You can then access the Petclinic at <http://localhost:8080/>.
-
-<img width="1042" alt="petclinic-screenshot" src="https://cloud.githubusercontent.com/assets/838318/19727082/2aee6d6c-9b8e-11e6-81fe-e889a5ddfded.png">
-
-Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this, it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
+### Development (H2 in-memory database)
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`.
+Access at <http://localhost:8080/>.
+
+### With PostgreSQL (recommended for non-local environments)
+
+Start PostgreSQL:
+
+```bash
+docker compose up postgres
+```
+
+Run with the postgres profile:
+
+```bash
+SPRING_PROFILES_ACTIVE=postgres ./mvnw spring-boot:run
+```
+
+Or set environment variables for the database connection:
+
+```bash
+POSTGRES_URL=jdbc:postgresql://localhost/petclinic \
+POSTGRES_USER=petclinic \
+POSTGRES_PASS=petclinic \
+SPRING_PROFILES_ACTIVE=postgres \
+./mvnw spring-boot:run
+```
+
+### Repository Directory Setup
+
+To create the full intended documentation and skills directory structure, run:
+
+```bash
+mkdir -p docs/architecture docs/business docs/nfr docs/adr
+mkdir -p skills
+mkdir -p .github/instructions .github/ISSUE_TEMPLATE
+# Then move flat files to their intended locations:
+mv ARCHITECTURE.md docs/architecture/overview.md
+mv BUSINESS_RULES.md docs/business/business-rules.md
+mv QUALITY.md docs/nfr/quality.md
+mv ADR_TEMPLATE.md docs/adr/ADR-001-template.md
+mv SKILL_GENERATE_DOCS.md skills/generate-docs.md
+mv SKILL_GENERATE_TESTS.md skills/generate-tests.md
+mv SKILL_VALIDATE_DOC_IMPACT.md skills/validate-doc-impact.md
+mv .github/general.instructions.md .github/instructions/general.instructions.md
+```
+
+
 
 ## Building a Container
 
