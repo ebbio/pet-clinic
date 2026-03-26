@@ -120,3 +120,10 @@ INSERT INTO dog_photos VALUES (default, 11, 'https://placedog.net/640/480?id=41'
 INSERT INTO dog_photos VALUES (default, 12, 'https://placedog.net/640/480?id=42', 'Rosie herding', 1, 202000, 'jpg');
 INSERT INTO dog_photos VALUES (default, 12, 'https://placedog.net/640/480?id=43', 'Rosie portrait', 2, 195000, 'jpg');
 INSERT INTO dog_photos VALUES (default, 12, 'https://placedog.net/640/480?id=44', 'Rosie in action', 3, 208000, 'jpg');
+
+INSERT INTO dog_food_products VALUES (default, 'Premium Chicken Kibble', 'PawsFirst', 'High-protein dry food made with real chicken, ideal for adult dogs of all breeds.', 29.99, 5.0, true, 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=640');
+INSERT INTO dog_food_products VALUES (default, 'Salmon & Sweet Potato', 'NatureBite', 'Grain-free recipe with wild-caught salmon and sweet potato, great for sensitive stomachs.', 34.99, 5.0, true, 'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=640');
+INSERT INTO dog_food_products VALUES (default, 'Puppy Starter Pack', 'PawsFirst', 'Specially formulated for puppies up to 12 months, packed with DHA for brain development.', 24.99, 3.0, true, 'https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?w=640');
+INSERT INTO dog_food_products VALUES (default, 'Senior Vitality Blend', 'GoldenYears', 'Low-calorie, joint-supporting formula with glucosamine for dogs aged 7+.', 31.99, 4.0, true, 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=640');
+INSERT INTO dog_food_products VALUES (default, 'Beef & Vegetable Stew', 'HeartyPaws', 'Wet food with real beef chunks and fresh vegetables, perfect as a meal topper.', 3.49, 0.4, true, null);
+INSERT INTO dog_food_products VALUES (default, 'Hypoallergenic Duck & Rice', 'NatureBite', 'Single-protein, hypoallergenic formula for dogs with food sensitivities.', 39.99, 5.0, false, null);

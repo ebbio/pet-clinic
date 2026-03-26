@@ -74,3 +74,14 @@ CREATE TABLE IF NOT EXISTS dog_photos (
   file_type     VARCHAR(10),
   FOREIGN KEY (dog_id) REFERENCES featured_dogs(id)
 ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS dog_food_products (
+  id          INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name        VARCHAR(100),
+  brand       VARCHAR(100),
+  description VARCHAR(500),
+  price       DECIMAL(10, 2),
+  weight_kg   DOUBLE,
+  in_stock    TINYINT(1) DEFAULT 1,
+  image_url   VARCHAR(500)
+) engine=InnoDB;

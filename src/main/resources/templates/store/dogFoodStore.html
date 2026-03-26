@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'store')}">
+
+<body>
+
+  <style>
+    .store-section {
+      padding: 2rem 0;
+    }
+    .store-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .store-header h2 {
+      font-size: 2rem;
+      color: #6db33f;
+    }
+    .product-card {
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      height: 100%;
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-card .card-body {
+      padding: 1rem;
+    }
+    .product-card .product-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .product-card .product-brand {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .product-card .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #6db33f;
+      margin-bottom: 0.5rem;
+    }
+    .product-card .product-weight {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    .badge-in-stock {
+      background-color: #6db33f;
+      color: #fff;
+    }
+    .badge-out-of-stock {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .store-empty {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+  </style>
+
+  <div class="store-section">
+    <div class="store-header">
+      <h2><span class="fa fa-shopping-cart" aria-hidden="true"></span> <span th:text="#{dogFoodStore.title}">Dog Food Store</span></h2>
+      <p class="text-muted" th:text="#{dogFoodStore.subtitle}">Premium nutrition for your favourite companions!</p>
+    </div>
+
+    <div th:if="${products == null or products.empty}" class="store-empty">
+      <span class="fa fa-shopping-cart fa-3x mb-3" style="color:#ccc;"></span>
+      <h4 th:text="#{dogFoodStore.empty.title}">No Products Available</h4>
+      <p th:text="#{dogFoodStore.empty.text}">Our store is currently being stocked. Check back soon!</p>
+    </div>
+
+    <div th:if="${products != null and !products.empty}" class="row">
+      <div th:each="product : ${products}" class="col-sm-6 col-lg-4">
+        <div class="card product-card">
+          <div th:if="${product.imageUrl != null and !product.imageUrl.empty}">
+            <img th:src="${product.imageUrl}" th:alt="${product.name}" loading="lazy" />
+          </div>
+          <div th:if="${product.imageUrl == null or product.imageUrl.empty}"
+               class="bg-light d-flex align-items-center justify-content-center"
+               style="height:200px;">
+            <span class="fa fa-shopping-bag fa-4x text-muted"></span>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <p class="product-name" th:text="${product.name}">Product Name</p>
+            <p class="product-brand">
+              <span class="fa fa-tag"></span>
+              <span th:text="${product.brand}">Brand</span>
+            </p>
+            <p th:if="${product.description != null}" class="text-muted small" th:text="${product.description}">Description</p>
+            <div class="mt-auto">
+              <p class="product-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00</p>
+              <p th:if="${product.weightKg != null}" class="product-weight">
+                <span class="fa fa-balance-scale"></span>
+                <span th:text="${product.weightKg + ' kg'}">0.0 kg</span>
+              </p>
+              <span th:if="${product.inStock}"
+                    class="badge badge-in-stock"
+                    th:text="#{dogFoodStore.inStock}">In Stock</span>
+              <span th:if="${!product.inStock}"
+                    class="badge badge-out-of-stock"
+                    th:text="#{dogFoodStore.outOfStock}">Out of Stock</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
